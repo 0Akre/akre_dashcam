@@ -2,6 +2,8 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local isWatchingDashcam = false
 local dashcamCam = nil
 local dashcamPosition = Config.WatchCoords
+local maxDistance = 5000.0 -- Definujeme velkou maximální vzdálenost pro aktivaci kamery
+local attachedVehicle = nil
 
 CreateThread(function()
     exports['qb-target']:AddBoxZone("dashcam", dashcamPosition, 1.0, 1.0, {
@@ -65,11 +67,44 @@ RegisterNUICallback('closeMenu', function(data, cb)
     cb('ok')
 end)
 
-RegisterNUICallback('viewCamera', function(data, cb)
-    local vehicleNetId = data.netId
+function RequestVehicleControl(vehicleNetId)
     local vehicle = NetworkGetEntityFromNetworkId(vehicleNetId)
+    if not DoesEntityExist(vehicle) then
+        NetworkRequestControlOfNetworkId(vehicleNetId)
+        local timeout = 2000
+        while not NetworkHasControlOfNetworkId(vehicleNetId) and timeout > 0 do
+            Wait(100)
+            timeout = timeout - 100
+        end
+        vehicle = NetworkGetEntityFromNetworkId(vehicleNetId)
+    end
+    return vehicle
+end
+
+function EnsureVehicleStreaming(vehicleNetId)
+    local vehicle = NetworkGetEntityFromNetworkId(vehicleNetId)
+    if not DoesEntityExist(vehicle) then
+        RequestVehicleControl(vehicleNetId)
+        vehicle = NetworkGetEntityFromNetworkId(vehicleNetId)
+    end
 
     if DoesEntityExist(vehicle) then
+        local model = GetEntityModel(vehicle)
+        RequestModel(model)
+        while not HasModelLoaded(model) do
+            Wait(100)
+        end
+        SetEntityCoords(vehicle, GetEntityCoords(vehicle)) -- Zajištění, že vozidlo je správně streamované
+    end
+
+    return vehicle
+end
+
+RegisterNUICallback('viewCamera', function(data, cb)
+    local vehicleNetId = data.netId
+    attachedVehicle = EnsureVehicleStreaming(vehicleNetId)
+
+    if DoesEntityExist(attachedVehicle) then
         local playerPed = PlayerPedId()
         FreezePlayer(playerPed, true)
         SendNUIMessage({ action = 'preloading' })
@@ -77,10 +112,11 @@ RegisterNUICallback('viewCamera', function(data, cb)
         SendNUIMessage({ action = 'hidePreloading' })
 
         dashcamCam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
-        AttachCamToEntity(dashcamCam, vehicle, 0.0, .7, 0.5, true)
-        SetCamRot(dashcamCam, 0.0, 0.0, GetEntityHeading(vehicle))
+        AttachCamToEntity(dashcamCam, attachedVehicle, 0.0, 0.7, 1.0, true) -- Připojení kamery k vozidlu
+        SetCamRot(dashcamCam, 0.0, 0.0, GetEntityHeading(attachedVehicle))
         SetCamActive(dashcamCam, true)
         RenderScriptCams(true, false, 0, true, true)
+        SetFocusEntity(attachedVehicle) -- Nastavení fokus entity na vozidlo
         isWatchingDashcam = true
 
         SendNUIMessage({
@@ -89,16 +125,16 @@ RegisterNUICallback('viewCamera', function(data, cb)
 
         SendNUIMessage({
             action = 'showVehicleInfo',
-            plate = GetVehicleNumberPlateText(vehicle),
+            plate = GetVehicleNumberPlateText(attachedVehicle),
             code = generateRandomCode()
         })
 
         CreateThread(function()
             while isWatchingDashcam do
                 Wait(11)
-                if DoesEntityExist(vehicle) then
-                    local sirensOn = IsVehicleSirenOn(vehicle)
-                    local handbrakeOn = GetVehicleHandbrake(vehicle)
+                if DoesEntityExist(attachedVehicle) then
+                    local sirensOn = IsVehicleSirenOn(attachedVehicle)
+                    local handbrakeOn = GetVehicleHandbrake(attachedVehicle)
 
                     SendNUIMessage({
                         action = 'updateStatus',
@@ -106,21 +142,25 @@ RegisterNUICallback('viewCamera', function(data, cb)
                         handbrake = handbrakeOn,
                     })
 
-                    local vehicleCoords = GetEntityCoords(vehicle)
-                    local vehicleRot = GetEntityRotation(vehicle, 2)
+                    local vehicleCoords = GetEntityCoords(attachedVehicle)
+                    local vehicleRot = GetEntityRotation(attachedVehicle, 2)
                     SetCamCoord(dashcamCam, vehicleCoords.x, vehicleCoords.y, vehicleCoords.z + 1.0)
                     SetCamRot(dashcamCam, vehicleRot.x, vehicleRot.y, vehicleRot.z)
+                    RequestCollisionAtCoord(vehicleCoords.x, vehicleCoords.y, vehicleCoords.z) -- Načtení kolizí
                 else
                     RenderScriptCams(false, false, 0, true, true)
                     DestroyCam(dashcamCam, false)
                     dashcamCam = nil
                     isWatchingDashcam = false
+                    SetFocusEntity(playerPed) -- Nastavení fokus entity zpět na hráče
                     SendNUIMessage({ action = 'hideStatus' })
                     SendNUIMessage({ action = 'hideVehicleInfo' })
                     UnfreezePlayer(playerPed)
                 end
             end
         end)
+    else
+        QBCore.Functions.Notify('Unable to load vehicle for dashcam.', 'error')
     end
 
     cb('ok')
@@ -154,6 +194,7 @@ CreateThread(function()
                 DestroyCam(dashcamCam, false)
                 dashcamCam = nil
                 isWatchingDashcam = false
+                SetFocusEntity(playerPed) -- Nastavení fokus entity zpět na hráče
                 SendNUIMessage({ action = 'hideStatus' })
                 SendNUIMessage({ action = 'hideVehicleInfo' })
                 UnfreezePlayer(playerPed)
