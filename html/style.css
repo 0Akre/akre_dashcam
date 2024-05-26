@@ -1,0 +1,230 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#menu {
+    width: 80%;
+    max-width: 600px;
+    max-height: 750px;
+    padding: 20px;
+    background-color: rgb(54, 53, 53);
+    box-shadow: 0 0 4.62vh 0.925vh black;
+    border: 2px solid rgba(0, 0, 0, 0.335);
+    border-radius: 10px;
+    text-align: center;
+    overflow-y: auto; /* Enables vertical scrolling */
+}
+
+#menu::-webkit-scrollbar {
+    width: 12px;
+}
+
+#menu::-webkit-scrollbar-track {
+    background: rgba(76, 74, 74, 0.848);
+    border-radius: 10px;
+}
+
+#menu::-webkit-scrollbar-thumb {
+    background-color: rgba(54, 53, 53, 0.8);
+    border-radius: 10px;
+    border: 3px solid rgba(76, 74, 74, 0.848);
+}
+
+#menu::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(54, 53, 53, 1);
+}
+
+h1 {
+    margin: 0 0 20px;
+    font-size: 36px;
+    color: white;
+}
+
+#vehicle-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.vehicle-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: rgba(76, 74, 74, 0.848);
+    box-shadow: 0 0 1.62vh 0.525vh black;
+    border: 2px solid rgba(0, 0, 0, 0.335);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vehicle-item button {
+    background-color: rgba(76, 74, 74, 0.848);
+    box-shadow: 0 0 .62vh 0.225vh black;
+    border: 2px solid rgba(0, 0, 0, 0.335);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease; /* Smooth transition for scaling */
+}
+
+.vehicle-item button:hover {
+    background: linear-gradient(200deg, rgba(76, 74, 74, 0.848), green);
+    transform: scale(1.1); /* Scale the button by 10% when hovered */
+}
+
+#close-btn {
+    background-color: rgba(76, 74, 74, 0.848);
+    box-shadow: 0 0 .62vh 0.225vh black;
+    border: 2px solid rgba(0, 0, 0, 0.335);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease; /* Smooth transition for scaling */
+    margin-top: 20px;
+}
+
+#close-btn:hover {
+    background: linear-gradient(200deg, rgba(76, 74, 74, 0.848), red);
+    transform: scale(1.1); /* Scale the button by 10% when hovered */
+}
+
+.loading-screen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(76, 74, 74, 0.848);
+    box-shadow: 0 0 1.62vh 0.025vh black;
+    border: 2px solid rgba(0, 0, 0, 0.335);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.spinner {
+    animation: rotate 1s infinite;
+    height: 50px;
+    width: 50px;
+    margin: 20px auto;
+
+  }
+
+  .spinner:before,
+  .spinner:after {
+    border-radius: 50%;
+    content: "";
+    display: block;
+    height: 20px;
+    width: 20px;
+  }
+  .spinner:before {
+    animation: ball1 1s infinite;
+    background-color: #bababa;
+    box-shadow: 30px 0 0 black;
+    margin-bottom: 10px;
+  }
+  .spinner:after {
+    animation: ball2 1s infinite;
+    background-color: black;
+    box-shadow: 30px 0 0 #bababa;
+  }
+
+  @keyframes rotate {
+    0% { transform: rotate(0deg) scale(0.8) }
+    50% { transform: rotate(360deg) scale(1.2) }
+    100% { transform: rotate(720deg) scale(0.8) }
+  }
+
+  @keyframes ball1 {
+    0% {
+      box-shadow: 30px 0 0 black;
+    }
+    50% {
+      box-shadow: 0 0 0 black;
+      margin-bottom: 0;
+      transform: translate(15px, 15px);
+    }
+    100% {
+      box-shadow: 30px 0 0 black;
+      margin-bottom: 10px;
+    }
+  }
+
+  @keyframes ball2 {
+    0% {
+      box-shadow: 30px 0 0 #bababa;
+    }
+    50% {
+      box-shadow: 0 0 0 #bababa;
+      margin-top: -20px;
+      transform: translate(15px, 15px);
+    }
+    100% {
+      box-shadow: 30px 0 0 #bababa;
+      margin-top: 0;
+    }
+  }
+
+#status {
+    position: fixed;
+    bottom: 95vh;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(76, 74, 74, 0.848);
+    box-shadow: 0 0 1.62vh 0.025vh black;
+    border: 2px solid rgba(0, 0, 0, 0.335);
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    gap: 20px;
+    color: white;
+}
+
+#status p {
+    margin: 0;
+    font-size: 18px;
+}
+
+#vehicle-info {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(76, 74, 74, 0.848);
+    box-shadow: 0 0 1.62vh 0.025vh black;
+    border: 2px solid rgba(0, 0, 0, 0.335);
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    font-size: 17px;
+    text-align: left;
+}
+
+#vehicle-info p {
+    margin: 5px 0;
+}
+
+@keyframes blink {
+    0% { color: rgba(149, 0, 0, 0.919); }
+    50% { color: rgba(10, 38, 162, 0.912); }
+    100% { color: rgba(149, 0, 0, 0.919); }
+}
+
+.blinking {
+    animation: blink 1s infinite;
+}

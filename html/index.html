@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akre Police Dashcams</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="menu" style="display:none;">
+        <h1>ACTIVE DASHCAMS</h1>
+        <ul id="vehicle-list"></ul>
+        <button id="close-btn">CLOSE</button>
+    </div>
+    <div id="preloading" class="loading-screen" style="display:none;">
+        <div class="spinner"></div>
+        <h1>Loading Dashcam Data...</h1>
+    </div>
+    <div id="disconnecting" class="loading-screen" style="display:none;">
+        <div class="spinner"></div>
+        <h1>Disconnecting...</h1>
+    </div>
+    <div id="status" style="display:none;">
+        <p id="status-sirens">[SIRENS]</p>
+        <p id="status-handbrake">[HANDBRAKE]</p>
+    </div>
+    <div id="vehicle-info" style="display:none;">
+        <p id="vehicle-model"></p>
+        <p id="vehicle-plate"></p>
+        <p id="current-datetime"></p>
+        <p id="dashcam-code"></p>
+        <p id="dashcam-help"></p>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
