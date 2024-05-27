@@ -21,7 +21,7 @@ body {
     border: 2px solid rgba(0, 0, 0, 0.335);
     border-radius: 10px;
     text-align: center;
-    overflow-y: auto; /* Enables vertical scrolling */
+    overflow-y: auto;
 }
 
 #menu::-webkit-scrollbar {
@@ -76,12 +76,12 @@ h1 {
     padding: 10px;
     border-radius: 10px;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease; /* Smooth transition for scaling */
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .vehicle-item button:hover {
     background: linear-gradient(200deg, rgba(76, 74, 74, 0.848), green);
-    transform: scale(1.1); /* Scale the button by 10% when hovered */
+    transform: scale(1.1);
 }
 
 #close-btn {
@@ -93,13 +93,13 @@ h1 {
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease; /* Smooth transition for scaling */
+    transition: background 0.3s ease, transform 0.3s ease;
     margin-top: 20px;
 }
 
 #close-btn:hover {
     background: linear-gradient(200deg, rgba(76, 74, 74, 0.848), red);
-    transform: scale(1.1); /* Scale the button by 10% when hovered */
+    transform: scale(1.1);
 }
 
 .loading-screen {

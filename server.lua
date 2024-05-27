@@ -47,12 +47,11 @@ CreateThread(function()
                     handbrakeOn = handbrakeOn,
                 })
 
-                -- Udržování entity streamované
                 SetNetworkIdCanMigrate(netId, true)
                 SetNetworkIdExistsOnAllMachines(netId, true)
                 NetworkRegisterEntityAsNetworked(vehicle)
                 SetEntityVisible(vehicle, true)
-                SetEntityCoords(vehicle, GetEntityCoords(vehicle)) -- Zajištění, že vozidlo je správně streamované
+                SetEntityCoords(vehicle, GetEntityCoords(vehicle))
             end
         end
     end

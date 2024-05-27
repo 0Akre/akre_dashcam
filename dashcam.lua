@@ -2,7 +2,7 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local isWatchingDashcam = false
 local dashcamCam = nil
 local dashcamPosition = Config.WatchCoords
-local maxDistance = 5000.0 -- Definujeme velkou maximální vzdálenost pro aktivaci kamery
+local maxDistance = 5000.0
 local attachedVehicle = nil
 
 CreateThread(function()
@@ -94,7 +94,7 @@ function EnsureVehicleStreaming(vehicleNetId)
         while not HasModelLoaded(model) do
             Wait(100)
         end
-        SetEntityCoords(vehicle, GetEntityCoords(vehicle)) -- Zajištění, že vozidlo je správně streamované
+        SetEntityCoords(vehicle, GetEntityCoords(vehicle))
     end
 
     return vehicle
@@ -112,11 +112,11 @@ RegisterNUICallback('viewCamera', function(data, cb)
         SendNUIMessage({ action = 'hidePreloading' })
 
         dashcamCam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
-        AttachCamToEntity(dashcamCam, attachedVehicle, 0.0, 0.7, 1.0, true) -- Připojení kamery k vozidlu
+        AttachCamToEntity(dashcamCam, attachedVehicle, 0.0, 0.5, 1.0, true)
         SetCamRot(dashcamCam, 0.0, 0.0, GetEntityHeading(attachedVehicle))
         SetCamActive(dashcamCam, true)
         RenderScriptCams(true, false, 0, true, true)
-        SetFocusEntity(attachedVehicle) -- Nastavení fokus entity na vozidlo
+        SetFocusEntity(attachedVehicle)
         isWatchingDashcam = true
 
         SendNUIMessage({
@@ -146,13 +146,13 @@ RegisterNUICallback('viewCamera', function(data, cb)
                     local vehicleRot = GetEntityRotation(attachedVehicle, 2)
                     SetCamCoord(dashcamCam, vehicleCoords.x, vehicleCoords.y, vehicleCoords.z + 1.0)
                     SetCamRot(dashcamCam, vehicleRot.x, vehicleRot.y, vehicleRot.z)
-                    RequestCollisionAtCoord(vehicleCoords.x, vehicleCoords.y, vehicleCoords.z) -- Načtení kolizí
+                    RequestCollisionAtCoord(vehicleCoords.x, vehicleCoords.y, vehicleCoords.z)
                 else
                     RenderScriptCams(false, false, 0, true, true)
                     DestroyCam(dashcamCam, false)
                     dashcamCam = nil
                     isWatchingDashcam = false
-                    SetFocusEntity(playerPed) -- Nastavení fokus entity zpět na hráče
+                    SetFocusEntity(playerPed)
                     SendNUIMessage({ action = 'hideStatus' })
                     SendNUIMessage({ action = 'hideVehicleInfo' })
                     UnfreezePlayer(playerPed)
@@ -194,7 +194,7 @@ CreateThread(function()
                 DestroyCam(dashcamCam, false)
                 dashcamCam = nil
                 isWatchingDashcam = false
-                SetFocusEntity(playerPed) -- Nastavení fokus entity zpět na hráče
+                SetFocusEntity(playerPed)
                 SendNUIMessage({ action = 'hideStatus' })
                 SendNUIMessage({ action = 'hideVehicleInfo' })
                 UnfreezePlayer(playerPed)
